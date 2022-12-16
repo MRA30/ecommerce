@@ -1,6 +1,6 @@
 package com.example.ecommerce.service.impl;
 
-import com.example.ecommerce.BusinessException;
+import com.example.ecommerce.exception.BusinessException;
 import com.example.ecommerce.dto.request.CustomerRegister;
 import com.example.ecommerce.dto.request.UpdateUserRequest;
 import com.example.ecommerce.dto.request.UserRequest;
