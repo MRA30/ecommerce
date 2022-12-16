@@ -1,6 +1,7 @@
 package com.example.ecommerce.service;
 
 import com.example.ecommerce.dto.request.CustomerRegister;
+import com.example.ecommerce.dto.request.LoginRequest;
 import com.example.ecommerce.dto.request.UserUpdateProfile;
 import com.example.ecommerce.dto.request.UpdateUserRequest;
 import com.example.ecommerce.dto.request.UserRequest;
@@ -14,6 +15,8 @@ public interface UserService {
   UserResponse findUserById(long id);
 
   void registerCustomer(CustomerRegister customerRegister);
+
+  String login(LoginRequest loginrequest);
 
   void updateProfile(UserUpdateProfile userUpdateProfile);
 

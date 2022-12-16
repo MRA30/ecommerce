@@ -1,13 +1,18 @@
 package com.example.ecommerce.service.impl;
 
+import com.example.ecommerce.Util.CurrencyConvert;
 import com.example.ecommerce.dto.request.ProductRequest;
 import com.example.ecommerce.dto.response.ProductResponse;
+import com.example.ecommerce.exception.BusinessException;
 import com.example.ecommerce.model.Product;
 import com.example.ecommerce.repository.ProductRepository;
 import com.example.ecommerce.service.ProductService;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -21,7 +26,16 @@ public class ProductServiceImpl implements ProductService {
 
   private final ProductRepository productRepository;
 
-  private Product findById(long id){
+  private ProductResponse mappeProductToProductResponse(Product product){
+    return ProductResponse.builder()
+        .id(product.getId())
+        .name(product.getName())
+        .price(CurrencyConvert.convertToRupiah(product.getPrice()))
+        .description(product.getDescription())
+        .build();
+  }
+
+  public Product findById(long id){
     return productRepository.findById(id);
   }
 
@@ -38,17 +52,38 @@ public class ProductServiceImpl implements ProductService {
 
   @Override
   public void updateProduct(long id, ProductRequest productRequest) {
-
+    Product product = findById(id);
+    if(product != null){
+      product.setName(productRequest.getName());
+      product.setStock(productRequest.getStock());
+      product.setDescription(productRequest.getDescription());
+      product.setPrice(productRequest.getPrice());
+      productRepository.save(product);
+    }else {
+      throw new BusinessException("id",  "Product not found", HttpStatus.NOT_FOUND);
+    }
 
   }
 
   @Override
   public ProductResponse findProductById(long id) {
-    return null;
+    Product product = findById(id);
+    if(product != null){
+      return mappeProductToProductResponse(product);
+    }else {
+      throw new BusinessException("id",  "Product not found", HttpStatus.NOT_FOUND);
+    }
   }
 
   @Override
-  public Page<ProductResponse> findAllProductWithPaging(String keyword, Pageable pageable) {
-    return null;
+  public Page<ProductResponse> findAllProductWithPaging(String keyword, int page, int size, String sortBy, String sortDirection) {
+
+    Pageable pageable;
+    if(sortDirection.equals("asc")){
+      pageable = PageRequest.of(page, size, Sort.by(sortBy).ascending());
+    }else {
+      pageable = PageRequest.of(page, size, Sort.by(sortBy).descending());
+    }
+    return productRepository.findByName(keyword, pageable).map(this::mappeProductToProductResponse);
   }
 }

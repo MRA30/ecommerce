@@ -1,5 +1,6 @@
 package com.example.ecommerce.service.impl;
 
+import com.example.ecommerce.dto.request.LoginRequest;
 import com.example.ecommerce.exception.BusinessException;
 import com.example.ecommerce.dto.request.CustomerRegister;
 import com.example.ecommerce.dto.request.UpdateUserRequest;
@@ -13,6 +14,7 @@ import com.example.ecommerce.service.RoleService;
 import com.example.ecommerce.service.UserService;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -29,6 +31,8 @@ public class UserServiceImpl implements UserService {
   private final UserRepository userRepository;
 
   private final RoleService roleService;
+
+  private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
   private UserResponse mappeUserToUserResponse(User user) {
     return UserResponse.builder()
@@ -67,10 +71,15 @@ public class UserServiceImpl implements UserService {
         .fullName(customerRegister.getFullName())
         .email(customerRegister.getEmail())
         .phoneNumber(customerRegister.getPhoneNumber())
-        .password(customerRegister.getPassword())
+        .password(bCryptPasswordEncoder.encode(customerRegister.getPassword()))
         .status(true)
         .build();
     userRepository.save(user);
+  }
+
+  @Override
+  public String login(LoginRequest loginrequest) {
+    return null;
   }
 
   @Override
@@ -95,7 +104,7 @@ public class UserServiceImpl implements UserService {
         .phoneNumber(userRequest.getPhoneNumber())
         .isVerified(true)
         .status(true)
-        .password(password)
+        .password(bCryptPasswordEncoder.encode(password))
         .build();
     userRepository.save(user);
   }
