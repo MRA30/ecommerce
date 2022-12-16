@@ -1,0 +1,16 @@
+package com.example.ecommerce.repository;
+
+import com.example.ecommerce.model.Order;
+
+import org.aspectj.weaver.ast.Or;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface OrderRepository extends JpaRepository<Order, Long> {
+
+  Order findById(long id);
+
+  List<Order> findByCartId(long cartId);
+
+}
