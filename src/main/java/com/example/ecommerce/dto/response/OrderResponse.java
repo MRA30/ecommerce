@@ -17,8 +17,8 @@ public class OrderResponse {
 
   private String productPrice;
 
-  private String productQuantity;
+  private int productQuantity;
 
-  private String productStock;
+  private int productStock;
 
 }
