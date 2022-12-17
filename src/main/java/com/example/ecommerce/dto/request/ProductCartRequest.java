@@ -1,8 +1,6 @@
 package com.example.ecommerce.dto.request;
 
-import java.util.List;
-
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,9 +11,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CartRequest {
+public class ProductCartRequest {
 
-  @NotEmpty(message = "products is required")
-  private List<OrderRequest> products;
+  @NotNull(message = "quantity is required")
+  private int quantity;
 
 }

@@ -6,37 +6,35 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Data
-@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 @Builder
-@Table(name = "orders")
-public class Order extends Base {
+@Table(name = "product_carts")
+public class ProductCart extends Base {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", nullable = false, updatable = false)
   private long id;
 
-  @Column(name = "transaction_id")
-  private long transactionId;
+  @Column(name = "cart_id")
+  private long cartId;
 
   @ManyToOne
-  @JoinColumn(name = "product_id", nullable = false, referencedColumnName = "id")
+  @JoinColumn(name = "product_id", referencedColumnName = "id")
   private Product product;
 
-  @Column(name = "quantity", nullable = false, columnDefinition = "INT DEFAULT 1")
+  @Column(name = "quantity")
   private int quantity;
 
 }
