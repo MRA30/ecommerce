@@ -1,6 +1,6 @@
 package com.example.ecommerce.service.impl;
 
-import com.example.ecommerce.Util.CurrencyConvert;
+import com.example.ecommerce.util.CurrencyConvert;
 import com.example.ecommerce.dto.request.ProductRequest;
 import com.example.ecommerce.dto.response.ProductResponse;
 import com.example.ecommerce.exception.BusinessException;

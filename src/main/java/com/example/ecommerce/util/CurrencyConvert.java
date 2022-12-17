@@ -1,4 +1,4 @@
-package com.example.ecommerce.Util;
+package com.example.ecommerce.util;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;

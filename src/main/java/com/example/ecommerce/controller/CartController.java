@@ -1,8 +1,7 @@
 package com.example.ecommerce.controller;
 
-import com.example.ecommerce.Util.DefaultResponse;
+import com.example.ecommerce.util.DefaultResponse;
 import com.example.ecommerce.dto.request.CartRequest;
-import com.example.ecommerce.dto.request.ProductCartRequest;
 import com.example.ecommerce.dto.request.ProductCartUpdateRequest;
 import com.example.ecommerce.dto.response.CartResponse;
 import com.example.ecommerce.service.CartService;

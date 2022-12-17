@@ -1,6 +1,6 @@
 package com.example.ecommerce.exception;
 
-import com.example.ecommerce.Util.DefaultResponse;
+import com.example.ecommerce.util.DefaultResponse;
 
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;

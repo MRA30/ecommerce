@@ -1,6 +1,6 @@
 package com.example.ecommerce.controller;
 
-import com.example.ecommerce.Util.DefaultResponse;
+import com.example.ecommerce.util.DefaultResponse;
 import com.example.ecommerce.dto.request.TransactionRequest;
 import com.example.ecommerce.dto.request.TransactionUpdateRequest;
 import com.example.ecommerce.dto.response.TransactionResponse;

@@ -1,4 +1,4 @@
-package com.example.ecommerce.Util;
+package com.example.ecommerce.util;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

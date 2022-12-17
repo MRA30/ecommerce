@@ -1,6 +1,6 @@
 package com.example.ecommerce;
 
-import com.example.ecommerce.Util.AuditorAwareImpl;
+import com.example.ecommerce.util.AuditorAwareImpl;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
