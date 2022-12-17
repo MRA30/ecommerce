@@ -1,7 +1,7 @@
 package com.example.ecommerce.service;
 
 import com.example.ecommerce.dto.request.CartRequest;
-import com.example.ecommerce.dto.request.ProductCartRequest;
+import com.example.ecommerce.dto.request.ProductCartUpdateRequest;
 import com.example.ecommerce.dto.response.CartResponse;
 import com.example.ecommerce.model.Cart;
 
@@ -11,7 +11,7 @@ public interface CartService {
 
   void addProductToCart(long userId, CartRequest cartRequest);
 
-  void updateProductInCart(long userId, long id, ProductCartRequest productCartRequest);
+  void updateProductInCart(long userId, long id, ProductCartUpdateRequest productCartUpdateRequest);
 
   void removeProductFromCart(long userId, long productId);
 

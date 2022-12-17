@@ -3,6 +3,7 @@ package com.example.ecommerce.controller;
 import com.example.ecommerce.Util.DefaultResponse;
 import com.example.ecommerce.dto.request.CartRequest;
 import com.example.ecommerce.dto.request.ProductCartRequest;
+import com.example.ecommerce.dto.request.ProductCartUpdateRequest;
 import com.example.ecommerce.dto.response.CartResponse;
 import com.example.ecommerce.service.CartService;
 import com.example.ecommerce.service.UserService;
@@ -54,10 +55,10 @@ public class CartController {
 
   @PutMapping("/{id}")
   public ResponseEntity<DefaultResponse<?>> updateProductCart(@PathVariable("id") long id,
-      @Valid @RequestBody ProductCartRequest productCartRequest) {
+      @Valid @RequestBody ProductCartUpdateRequest productCartUpdateRequest) {
     // TODO : CHECK USER LOGIN
     long userId = 1;
-    cartService.updateProductInCart(userId, id, productCartRequest);
+    cartService.updateProductInCart(userId, id, productCartUpdateRequest);
     return ResponseEntity.status(HttpStatus.OK)
         .body(new DefaultResponse<>("Success", false, null, HttpStatus.OK.value()));
   }

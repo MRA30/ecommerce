@@ -16,6 +16,6 @@ import lombok.NoArgsConstructor;
 public class CartRequest {
 
   @NotEmpty(message = "products is required")
-  private List<OrderRequest> products;
+  private List<ProductCartRequest> products;
 
 }

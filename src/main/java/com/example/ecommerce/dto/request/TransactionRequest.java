@@ -1,5 +1,8 @@
 package com.example.ecommerce.dto.request;
 
+import java.util.List;
+
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
@@ -13,13 +16,10 @@ import lombok.NoArgsConstructor;
 @Builder
 public class TransactionRequest {
 
-  @NotNull(message = "cartId is required")
-  private Long cartId;
-
   @NotNull(message = "addressId is required")
-  private Long addressId;
+  private long addressId;
 
-  @NotNull(message = "orderId is required")
-  private Long orderId;
+  @NotEmpty(message = "order is required")
+  private List<OrderRequest> orderRequests;
 
 }

@@ -35,6 +35,31 @@ public class ProductServiceImpl implements ProductService {
         .build();
   }
 
+  @Override
+  public Product save(Product product) {
+    return productRepository.save(product);
+  }
+
+  @Override
+  public void saveAfterSold(long id, int quantity) {
+    Product product = findById(id);
+    int stock = product.getStock();
+    int sold = product.getSold();
+    product.setStock(stock - quantity);
+    product.setSold(sold + quantity);
+    save(product);
+  }
+
+  @Override
+  public void saveAfterCancel(long id, int quantity) {
+    Product product = findById(id);
+    int stock = product.getStock();
+    int sold = product.getSold();
+    product.setStock(stock + quantity);
+    product.setSold(sold - quantity);
+    save(product);
+  }
+
   public Product findById(long id){
     return productRepository.findById(id);
   }
@@ -47,7 +72,7 @@ public class ProductServiceImpl implements ProductService {
         .description(productRequest.getDescription())
         .price(productRequest.getPrice())
         .build();
-    productRepository.save(product);
+    save(product);
   }
 
   @Override

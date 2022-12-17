@@ -1,7 +1,7 @@
 package com.example.ecommerce.service.impl;
 
 import com.example.ecommerce.dto.request.CartRequest;
-import com.example.ecommerce.dto.request.ProductCartRequest;
+import com.example.ecommerce.dto.request.ProductCartUpdateRequest;
 import com.example.ecommerce.dto.response.CartResponse;
 import com.example.ecommerce.dto.response.ProductCartResponse;
 import com.example.ecommerce.exception.BusinessException;
@@ -73,13 +73,14 @@ public class CartServiceImpl implements CartService {
   }
 
   @Override
-  public void updateProductInCart(long userId, long id, ProductCartRequest productCartRequest) {
+  public void updateProductInCart(long userId, long id,
+      ProductCartUpdateRequest productCartUpdateRequest) {
 
     ProductCart productCart = productCartService.findProductCartById(id);
     if (productCart != null) {
       Cart cart = findById(productCart.getCartId());
       if (cart.getUser().getId() == userId) {
-        productCart.setQuantity(productCartRequest.getQuantity());
+        productCart.setQuantity(productCartUpdateRequest.getQuantity());
         productCartService.save(productCart);
       } else {
         throw new BusinessException("Product Cart Id", "Product cart not found",

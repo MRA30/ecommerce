@@ -11,12 +11,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ProductCartRequest {
+public class ProductCartUpdateRequest {
 
   @NotNull
-  private int productId;
-
-  @NotNull(message = "quantity is required")
   private int quantity;
 
 }

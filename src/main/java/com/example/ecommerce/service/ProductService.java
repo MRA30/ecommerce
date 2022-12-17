@@ -5,9 +5,14 @@ import com.example.ecommerce.dto.response.ProductResponse;
 import com.example.ecommerce.model.Product;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 public interface ProductService {
+
+  Product save(Product product);
+
+  void saveAfterSold(long id, int quantity);
+
+  void saveAfterCancel(long id, int quantity);
 
   Product findById(long id);
 
@@ -17,6 +22,7 @@ public interface ProductService {
 
   ProductResponse findProductById(long id);
 
-  Page<ProductResponse> findAllProductWithPaging(String keyword, int page, int size, String sortBy, String sortDirection);
+  Page<ProductResponse> findAllProductWithPaging(String keyword, int page, int size, String sortBy,
+      String sortDirection);
 
 }
