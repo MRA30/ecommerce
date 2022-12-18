@@ -1,6 +1,6 @@
 package com.example.ecommerce.service.impl;
 
-import com.example.ecommerce.util.Pageableutil;
+import com.example.ecommerce.dto.request.OrderRequest;
 import com.example.ecommerce.dto.request.TransactionRequest;
 import com.example.ecommerce.dto.request.TransactionUpdateRequest;
 import com.example.ecommerce.dto.response.OrderResponse;
@@ -17,6 +17,7 @@ import com.example.ecommerce.service.OrderService;
 import com.example.ecommerce.service.ProductService;
 import com.example.ecommerce.service.TransactionService;
 import com.example.ecommerce.service.UserService;
+import com.example.ecommerce.util.Pageableutil;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -130,9 +131,15 @@ public class TransactionServiceImpl implements TransactionService {
   public void createTransaction(long userId, TransactionRequest transactionRequest) {
     User user = userService.findById(userId);
     Address address = addressService.findById(transactionRequest.getAddressId());
+    double totalPrice = 0;
+    for (OrderRequest order : transactionRequest.getOrderRequests()){
+      Product product = productService.findById(order.getProductId());
+      totalPrice += product.getPrice() * order.getQuantity();
+    }
     Transaction transaction = Transaction.builder()
         .user(user)
         .address(address.getAddress())
+        .totalPrice(totalPrice)
         .build();
     Transaction transactionSave = save(transaction);
 
