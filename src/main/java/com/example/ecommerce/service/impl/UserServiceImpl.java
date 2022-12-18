@@ -12,6 +12,7 @@ import com.example.ecommerce.exception.BusinessException;
 import com.example.ecommerce.model.Role;
 import com.example.ecommerce.model.User;
 import com.example.ecommerce.repository.UserRepository;
+import com.example.ecommerce.security.JwtUtil;
 import com.example.ecommerce.service.RoleService;
 import com.example.ecommerce.service.UserService;
 
@@ -36,6 +37,8 @@ public class UserServiceImpl implements UserService {
   private final RoleService roleService;
 
   private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+  private final JwtUtil jwtUtil;
 
   private void save(User user) {
     userRepository.save(user);
@@ -91,7 +94,15 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public String login(LoginRequest loginrequest) {
-    return null;
+    User user = findByEmail(loginrequest.getEmail());
+    if (user == null) {
+      throw new BusinessException("error", "email/password invalid", HttpStatus.BAD_REQUEST);
+    } else {
+      if (bCryptPasswordEncoder.matches(loginrequest.getPassword(), user.getPassword())) {
+        throw new BusinessException("error", "email/password invalid", HttpStatus.BAD_REQUEST);
+      }
+      return jwtUtil.generateToken(user, user.getRole());
+    }
   }
 
   @Override

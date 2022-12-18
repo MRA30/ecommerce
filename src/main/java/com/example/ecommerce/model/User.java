@@ -1,6 +1,5 @@
 package com.example.ecommerce.model;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -11,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -51,10 +51,10 @@ public class User extends Base {
   @Column(name = "status", nullable = false, columnDefinition = "boolean default false")
   private boolean status;
 
-  @Column(name = "veificationCode")
+  @Column(name = "verification_code")
   private String verificationCode;
 
-  @Column(name = "verificationCodeExpired")
+  @Column(name = "verification_code_expired")
   private LocalDateTime verificationCodeExpired;
 
 }
