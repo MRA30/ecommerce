@@ -12,6 +12,8 @@ import com.example.ecommerce.model.User;
 
 public interface UserService {
 
+  User user();
+
   User findById(long id);
 
   User findByEmail(String email);

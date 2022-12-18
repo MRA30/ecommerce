@@ -17,9 +17,11 @@ import com.example.ecommerce.service.RoleService;
 import com.example.ecommerce.service.UserService;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -57,6 +59,15 @@ public class UserServiceImpl implements UserService {
         .build();
   }
 
+
+  private Principal principal(){
+    return SecurityContextHolder.getContext().getAuthentication();
+  }
+
+  @Override
+  public User user() {
+    return userRepository.findByEmail(principal().getName());
+  }
 
   @Override
   public User findById(long id) {

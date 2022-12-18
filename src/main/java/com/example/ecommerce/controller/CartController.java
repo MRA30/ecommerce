@@ -1,11 +1,11 @@
 package com.example.ecommerce.controller;
 
-import com.example.ecommerce.util.DefaultResponse;
 import com.example.ecommerce.dto.request.CartRequest;
 import com.example.ecommerce.dto.request.ProductCartUpdateRequest;
 import com.example.ecommerce.dto.response.CartResponse;
 import com.example.ecommerce.service.CartService;
 import com.example.ecommerce.service.UserService;
+import com.example.ecommerce.util.DefaultResponse;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,8 +35,7 @@ public class CartController {
   @PostMapping
   public ResponseEntity<DefaultResponse<?>> addProductToCart(
       @Valid @RequestBody CartRequest cartRequest) {
-    // TODO : CHECK USER LOGIN
-    long userId = 1;
+    long userId = userService.user().getId();
     cartService.addProductToCart(userId, cartRequest);
 
     return ResponseEntity.status(HttpStatus.CREATED)
@@ -45,8 +44,7 @@ public class CartController {
 
   @GetMapping
   public ResponseEntity<DefaultResponse<CartResponse>> getCartById() {
-    // TODO : CHECK USER LOGIN
-    long userId = 1;
+    long userId = userService.user().getId();
     CartResponse cartResponse = cartService.findCartByUserId(userId);
     return ResponseEntity.status(HttpStatus.OK)
         .body(new DefaultResponse<>("Success", false, cartResponse, HttpStatus.OK.value()));
@@ -55,8 +53,7 @@ public class CartController {
   @PutMapping("/{id}")
   public ResponseEntity<DefaultResponse<?>> updateProductCart(@PathVariable("id") long id,
       @Valid @RequestBody ProductCartUpdateRequest productCartUpdateRequest) {
-    // TODO : CHECK USER LOGIN
-    long userId = 1;
+    long userId = userService.user().getId();
     cartService.updateProductInCart(userId, id, productCartUpdateRequest);
     return ResponseEntity.status(HttpStatus.OK)
         .body(new DefaultResponse<>("Success", false, null, HttpStatus.OK.value()));
@@ -64,8 +61,7 @@ public class CartController {
 
   @DeleteMapping("/{id}")
   public ResponseEntity<DefaultResponse<?>> deleteProductCart(@PathVariable("id") long id) {
-    // TODO : CHECK USER LOGIN
-    long userId = 1;
+    long userId = userService.user().getId();
     cartService.removeProductFromCart(userId, id);
     return ResponseEntity.status(HttpStatus.OK)
         .body(new DefaultResponse<>("Success", false, null, HttpStatus.OK.value()));

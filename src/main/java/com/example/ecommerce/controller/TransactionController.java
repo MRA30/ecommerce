@@ -1,5 +1,6 @@
 package com.example.ecommerce.controller;
 
+import com.example.ecommerce.service.UserService;
 import com.example.ecommerce.util.DefaultResponse;
 import com.example.ecommerce.dto.request.TransactionRequest;
 import com.example.ecommerce.dto.request.TransactionUpdateRequest;
@@ -29,11 +30,12 @@ public class TransactionController {
 
   private final TransactionService transactionService;
 
+  private final UserService userService;
+
   @PostMapping
   public ResponseEntity<DefaultResponse<?>> createTransaction(
       @Valid @RequestBody TransactionRequest transactionRequest) {
-    // TODO : CHECK USER LOGIN
-    long userId = 1;
+    long userId = userService.user().getId();
     transactionService.createTransaction(userId, transactionRequest);
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(new DefaultResponse<>("Success", false, null, HttpStatus.CREATED.value()));
@@ -72,8 +74,7 @@ public class TransactionController {
       @RequestParam(defaultValue = "all") String status, @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "id") String sortBy,
       @RequestParam(defaultValue = "asc") String sortDir) {
-    // TODO : CHECK USER LOGIN
-    long userId = 1;
+    long userId = userService.user().getId();
     Page<TransactionResponse> transactionResponses = transactionService.findAllTransactionByCustomer(
         userId, status, page, size, sortBy, sortDir);
     return ResponseEntity.status(HttpStatus.OK)
@@ -83,8 +84,7 @@ public class TransactionController {
   @GetMapping("/customer/{id}")
   public ResponseEntity<DefaultResponse<TransactionResponse>> findByIdTransactionByCustomer(
       @PathVariable("id") long id) {
-    // TODO : CHECK USER LOGIN
-    long userId = 1;
+    long userId = userService.user().getId();
     TransactionResponse transactionResponse = transactionService.findByIdByCustomer(userId, id);
     return ResponseEntity.status(HttpStatus.OK)
         .body(new DefaultResponse<>("Success", false, transactionResponse, HttpStatus.OK.value()));
