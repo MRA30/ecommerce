@@ -42,7 +42,7 @@ public class JwtUtil implements Serializable {
   }
 
   public String generateToken(User user, Role role) {
-    log.info("[TITIK KOMA - GENERATING USER TOKEN]");
+    log.info("[ GENERATING USER TOKEN ]");
     return Jwts.builder()
         .claim("userId", user.getId())
         .claim("name", user.getFullName())

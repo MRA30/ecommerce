@@ -1,6 +1,7 @@
 package com.example.ecommerce.model;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -54,6 +55,6 @@ public class User extends Base {
   private String verificationCode;
 
   @Column(name = "verificationCodeExpired")
-  private Timestamp verificationCodeExpired;
+  private LocalDateTime verificationCodeExpired;
 
 }

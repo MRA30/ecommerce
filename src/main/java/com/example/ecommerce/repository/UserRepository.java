@@ -13,6 +13,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
   User findById(long id);
 
+  User findByVerificationCode(String verificationCode);
+
   @Query("SELECT u FROM User u WHERE u.email LIKE %?1% OR u.fullName LIKE %?1% OR u.phoneNumber LIKE %?1% AND u.role.id = 1")
   Page<User> findAdminByEmailOrFullNameOrPhoneNumber(String keyword, Pageable pageable);
 

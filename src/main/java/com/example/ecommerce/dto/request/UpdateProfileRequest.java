@@ -13,17 +13,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserUpdateProfile {
+public class UpdateProfileRequest {
 
   @NotEmpty(message = "fullName is required")
   private String fullName;
 
   @NotEmpty(message = "email is required")
-  @Email(message = "email is not valid")
+  @Email(message = "email not valid")
   private String email;
 
-  @NotEmpty
-  @Pattern(regexp = "(0)8[1-9][0-9]{7,11}$", message = "phone number is not valid")
+  @NotEmpty(message = "phoneNumber is required")
+  @Pattern(regexp = "^(0)8[1-9][0-9]{6,10}$", message = "phoneNumber not valid")
   private String phoneNumber;
 
 }

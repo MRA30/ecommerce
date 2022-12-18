@@ -1,12 +1,14 @@
 package com.example.ecommerce.service.impl;
 
-import com.example.ecommerce.dto.request.LoginRequest;
-import com.example.ecommerce.exception.BusinessException;
+import com.example.ecommerce.dto.request.ChangePasswordRequest;
 import com.example.ecommerce.dto.request.CustomerRegister;
+import com.example.ecommerce.dto.request.LoginRequest;
+import com.example.ecommerce.dto.request.ResetPasswordRequest;
+import com.example.ecommerce.dto.request.UpdateProfileRequest;
 import com.example.ecommerce.dto.request.UpdateUserRequest;
 import com.example.ecommerce.dto.request.UserRequest;
-import com.example.ecommerce.dto.request.UserUpdateProfile;
 import com.example.ecommerce.dto.response.UserResponse;
+import com.example.ecommerce.exception.BusinessException;
 import com.example.ecommerce.model.Role;
 import com.example.ecommerce.model.User;
 import com.example.ecommerce.repository.UserRepository;
@@ -17,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import javax.transaction.Transactional;
@@ -33,6 +36,10 @@ public class UserServiceImpl implements UserService {
   private final RoleService roleService;
 
   private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+  private void save(User user) {
+    userRepository.save(user);
+  }
 
   private UserResponse mappeUserToUserResponse(User user) {
     return UserResponse.builder()
@@ -51,6 +58,11 @@ public class UserServiceImpl implements UserService {
   @Override
   public User findById(long id) {
     return userRepository.findById(id);
+  }
+
+  @Override
+  public User findByEmail(String email) {
+    return userRepository.findByEmail(email);
   }
 
   @Override
@@ -74,23 +86,12 @@ public class UserServiceImpl implements UserService {
         .password(bCryptPasswordEncoder.encode(customerRegister.getPassword()))
         .status(true)
         .build();
-    userRepository.save(user);
+    save(user);
   }
 
   @Override
   public String login(LoginRequest loginrequest) {
     return null;
-  }
-
-  @Override
-  public void updateProfile(UserUpdateProfile userUpdateProfile) {
-    // TODO GET PROFILE
-    User user = findById(1);
-    user.setFullName(userUpdateProfile.getFullName());
-    user.setPhoneNumber(userUpdateProfile.getPhoneNumber());
-    user.setEmail(userUpdateProfile.getEmail());
-    userRepository.save(user);
-
   }
 
   @Override
@@ -106,7 +107,7 @@ public class UserServiceImpl implements UserService {
         .status(true)
         .password(bCryptPasswordEncoder.encode(password))
         .build();
-    userRepository.save(user);
+    save(user);
   }
 
   @Override
@@ -117,7 +118,67 @@ public class UserServiceImpl implements UserService {
       user.setEmail(updateUserRequest.getEmail());
       user.setPhoneNumber(updateUserRequest.getPhoneNumber());
       user.setStatus(updateUserRequest.isStatus());
-      userRepository.save(user);
+      save(user);
+    } else {
+      throw new BusinessException("id", "User not found", HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Override
+  public void updateProfile(long userId, UpdateProfileRequest updateProfileRequest) {
+    User user = findById(userId);
+    if (user != null) {
+      user.setFullName(updateProfileRequest.getFullName());
+      user.setEmail(updateProfileRequest.getEmail());
+      user.setPhoneNumber(updateProfileRequest.getPhoneNumber());
+      save(user);
+    } else {
+      throw new BusinessException("id", "User not found", HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Override
+  public String forgotPassword(String email) {
+    String token;
+    User user = findByEmail(email);
+    if (user != null) {
+      String verificationCode = UUID.randomUUID().toString();
+      user.setVerificationCode(verificationCode);
+      user.setVerificationCodeExpired(LocalDateTime.now().plusHours(1));
+      save(user);
+      token = verificationCode;
+    } else {
+      throw new BusinessException("email", "Email not found", HttpStatus.BAD_REQUEST);
+    }
+    return token;
+  }
+
+  @Override
+  public void resetPassword(String token, ResetPasswordRequest resetPasswordRequest) {
+    User user = userRepository.findByVerificationCode(token);
+    if (user != null) {
+
+      user.setPassword(bCryptPasswordEncoder.encode(resetPasswordRequest.getPassword()));
+      user.setVerificationCode(null);
+      user.setVerificationCodeExpired(null);
+      save(user);
+    } else {
+      throw new BusinessException("token", "Token not valid", HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @Override
+  public void changePassword(long userId, ChangePasswordRequest changePasswordRequest) {
+    User user = findById(userId);
+    if (user != null) {
+      if (bCryptPasswordEncoder.matches(changePasswordRequest.getOldPassword(),
+          user.getPassword())) {
+        user.setPassword(bCryptPasswordEncoder.encode(changePasswordRequest.getNewPassword()));
+        save(user);
+      } else {
+        throw new BusinessException("oldPassword", "Old password not valid",
+            HttpStatus.BAD_REQUEST);
+      }
     } else {
       throw new BusinessException("id", "User not found", HttpStatus.BAD_REQUEST);
     }

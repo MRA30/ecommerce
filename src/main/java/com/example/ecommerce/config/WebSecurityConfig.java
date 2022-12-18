@@ -1,8 +1,12 @@
 package com.example.ecommerce.config;
 
 
+import com.example.ecommerce.Constant.Constant;
 import com.example.ecommerce.exception.AccessDeniedHandlers;
 import com.example.ecommerce.exception.AuthenticationHandlers;
+import com.example.ecommerce.security.ApplicationFilter;
+import com.example.ecommerce.security.JwtUtil;
+import com.example.ecommerce.service.UserService;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,15 +25,16 @@ import lombok.RequiredArgsConstructor;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig {
 
-  private static final String[] PERMIT_ALL_URIS = {"/users/login", "/users/forgot-password",
-      "/users/reset-password", "/swagger-ui/",};
-
   private final AccessDeniedHandlers accessDeniedHandlers;
 
   private final AuthenticationHandlers authenticationHandlers;
 
+  private final JwtUtil jwtUtil;
+
+  private final UserService userService;
+
   public ApplicationFilter authenticationFilter() {
-    return new ApplicationFilter(jwtUtils);
+    return new ApplicationFilter(jwtUtil, userService);
   }
 
 
@@ -42,7 +47,7 @@ public class WebSecurityConfig {
         .csrf()
         .disable()
         .authorizeRequests()
-        .antMatchers(PERMIT_ALL_URIS)
+        .antMatchers(Constant.PERMIT_ALL_URIS)
         .permitAll()
         .anyRequest()
         .authenticated();

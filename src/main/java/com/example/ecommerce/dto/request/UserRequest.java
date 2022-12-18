@@ -23,7 +23,7 @@ public class UserRequest {
   @Email(message = "email is not valid")
   private String email;
 
-  @NotEmpty
+  @NotEmpty(message = "phoneNumber is required")
   @Pattern(regexp = "(0)8[1-9][0-9]{7,11}$", message = "phone number is not valid")
   private String phoneNumber;
 
