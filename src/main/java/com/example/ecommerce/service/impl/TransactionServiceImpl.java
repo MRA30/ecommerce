@@ -17,6 +17,7 @@ import com.example.ecommerce.service.OrderService;
 import com.example.ecommerce.service.ProductService;
 import com.example.ecommerce.service.TransactionService;
 import com.example.ecommerce.service.UserService;
+import com.example.ecommerce.util.CurrencyConvert;
 import com.example.ecommerce.util.Pageableutil;
 
 import org.springframework.data.domain.Page;
@@ -49,6 +50,25 @@ public class TransactionServiceImpl implements TransactionService {
 
   private final ProductService productService;
 
+  private String convertStatus(int status) {
+    switch (status) {
+      case 0:
+        return "Unpaid";
+      case 1:
+        return "Paid";
+      case 2:
+        return "Cancel";
+      case 3:
+        return "Processing";
+      case 4:
+        return "Shipping";
+      case 5:
+        return "Done";
+      default:
+        throw new BusinessException("status", "Status is not valid", HttpStatus.BAD_REQUEST);
+    }
+  }
+
   private TransactionResponse convertTransactionToTransactionResponse(Transaction transaction) {
     List<OrderResponse> orderResponses = new ArrayList<>();
     for (Order order : transaction.getOrderList()) {
@@ -62,6 +82,8 @@ public class TransactionServiceImpl implements TransactionService {
         .customerAddress(transaction.getAddress())
         .customerEmail(transaction.getUser().getEmail())
         .customerPhoneNumber(transaction.getUser().getPhoneNumber())
+        .totalPrice(CurrencyConvert.convertToRupiah(transaction.getTotalPrice()))
+        .status(convertStatus(transaction.getStatus()))
         .orders(orderResponses)
         .build();
   }
@@ -132,7 +154,7 @@ public class TransactionServiceImpl implements TransactionService {
     User user = userService.findById(userId);
     Address address = addressService.findById(transactionRequest.getAddressId());
     double totalPrice = 0;
-    for (OrderRequest order : transactionRequest.getOrderRequests()){
+    for (OrderRequest order : transactionRequest.getOrderRequests()) {
       Product product = productService.findById(order.getProductId());
       totalPrice += product.getPrice() * order.getQuantity();
     }
@@ -213,7 +235,7 @@ public class TransactionServiceImpl implements TransactionService {
       int page, int size, String sortBy, String sortDir) {
     Page<TransactionResponse> transactions;
     if (status.equals("all")) {
-      transactions = findAllTransactionByCustomer(userId, status, page, size, sortBy, sortDir);
+      transactions = findAllTransactionByCustomerPaging(userId, page, size, sortBy, sortDir);
     } else {
       transactions = findAllTransactionByCustomerAndStatusPaging(userId, status, page, size, sortBy,
           sortDir);
