@@ -8,6 +8,8 @@ public interface ProductCartService {
 
   void save(ProductCart productCart);
 
+  ProductCart findProductCartByCartIdAndProductId(long cartId, long productId);
+
   ProductCart findProductCartById(long id);
 
   void delete(ProductCart productCart);

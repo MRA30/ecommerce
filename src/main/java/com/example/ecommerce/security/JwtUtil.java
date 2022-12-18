@@ -43,19 +43,23 @@ public class JwtUtil implements Serializable {
 
   public String generateToken(User user, Role role) {
     log.info("[ GENERATING USER TOKEN ]");
+    String roleString = role.getName()
+        .replace(role.getName(), "ROLE_" + role.getName().toUpperCase());
+
     return Jwts.builder()
         .claim("userId", user.getId())
         .claim("name", user.getFullName())
         .claim("username", user.getEmail())
         .claim("email", user.getEmail())
-        .claim("role", role.getName())
+        .claim("role", roleString)
+        .claim("authorities", roleString)
         .claim("phone", user.getPhoneNumber())
         .claim("type", "Cookie")
         .setSubject(user.getEmail())
         .setId(UUID.randomUUID().toString())
         .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
         .setIssuedAt(new Date())
-        .signWith(SignatureAlgorithm.HS256, getKey()).compact();
+        .signWith(getKey(), SignatureAlgorithm.HS256).compact();
   }
 
   public Claims getClaims(String token) {

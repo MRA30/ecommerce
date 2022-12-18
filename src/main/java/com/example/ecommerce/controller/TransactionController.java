@@ -10,6 +10,7 @@ import com.example.ecommerce.service.TransactionService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,6 +33,7 @@ public class TransactionController {
 
   private final UserService userService;
 
+  @PreAuthorize("hasRole('ROLE_CUSTOMER')")
   @PostMapping
   public ResponseEntity<DefaultResponse<?>> createTransaction(
       @Valid @RequestBody TransactionRequest transactionRequest) {
@@ -41,6 +43,7 @@ public class TransactionController {
         .body(new DefaultResponse<>("Success", false, null, HttpStatus.CREATED.value()));
   }
 
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   @PutMapping("/{id}")
   public ResponseEntity<DefaultResponse<?>> updateTransaction(@PathVariable("id") long id,
       @Valid @RequestBody TransactionUpdateRequest transactionUpdateRequest) {
@@ -49,6 +52,7 @@ public class TransactionController {
         .body(new DefaultResponse<>("Success", false, null, HttpStatus.OK.value()));
   }
 
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   @GetMapping
   public ResponseEntity<DefaultResponse<Page<TransactionResponse>>> findAllTransactionByAdmin(
       @RequestParam(defaultValue = "all") String status, @RequestParam(defaultValue = "0") int page,
@@ -60,6 +64,7 @@ public class TransactionController {
         .body(new DefaultResponse<>("Success", false, transactionResponses, HttpStatus.OK.value()));
   }
 
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   @GetMapping("/{id}")
   public ResponseEntity<DefaultResponse<TransactionResponse>> findByIdTransactionByAdmin(
       @PathVariable("id") long id) {
@@ -69,6 +74,7 @@ public class TransactionController {
   }
 
 
+  @PreAuthorize("hasRole('ROLE_CUSTOMER')")
   @GetMapping("/customer")
   public ResponseEntity<DefaultResponse<Page<TransactionResponse>>> findAllTransactionByCustomer(
       @RequestParam(defaultValue = "all") String status, @RequestParam(defaultValue = "0") int page,
@@ -81,6 +87,7 @@ public class TransactionController {
         .body(new DefaultResponse<>("Success", false, transactionResponses, HttpStatus.OK.value()));
   }
 
+  @PreAuthorize("hasRole('ROLE_CUSTOMER')")
   @GetMapping("/customer/{id}")
   public ResponseEntity<DefaultResponse<TransactionResponse>> findByIdTransactionByCustomer(
       @PathVariable("id") long id) {

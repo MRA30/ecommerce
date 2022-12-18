@@ -30,7 +30,8 @@ public class ProductServiceImpl implements ProductService {
     return ProductResponse.builder()
         .id(product.getId())
         .name(product.getName())
-        .price(CurrencyConvert.convertToRupiah(product.getPrice()))
+        .price(product.getPrice())
+        .stock(product.getStock())
         .description(product.getDescription())
         .build();
   }

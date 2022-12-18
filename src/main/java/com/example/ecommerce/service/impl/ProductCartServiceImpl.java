@@ -25,6 +25,11 @@ public class ProductCartServiceImpl implements ProductCartService {
   }
 
   @Override
+  public ProductCart findProductCartByCartIdAndProductId(long cartId, long productId) {
+    return productCartRepository.findByCartIdAndProductId(cartId, productId);
+  }
+
+  @Override
   public ProductCart findProductCartById(long id) {
     return productCartRepository.findById(id);
   }

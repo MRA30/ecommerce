@@ -30,8 +30,6 @@ public class ApplicationFilter extends OncePerRequestFilter {
 
   private final JwtUtil jwtUtil;
 
-  private final UserService userService;
-
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
       FilterChain filterChain) throws ServletException, IOException {
@@ -55,12 +53,13 @@ public class ApplicationFilter extends OncePerRequestFilter {
           private static final long serialVersionUID = 1L;
         };
       }
-      log.info("[ CHECKING TOKEN VALIDITY ]");
-      if (userService.findByEmail(claims.getSubject()) == null) {
-        throw new AuthenticationException("Token Not Valid") {
-          private static final long serialVersionUID = 1L;
-        };
-      }
+//      log.info("[ CHECKING TOKEN VALIDITY ]");
+//      System.out.println(claims);
+//      if (userService.findByEmail(claims.getSubject()) == null) {
+//        throw new AuthenticationException("Token Not Valid") {
+//          private static final long serialVersionUID = 1L;
+//        };
+//      }
 
       log.info(" [ CLAIMS COSTUME TOKEN ]");
       CustomAuthenticationToken customAuthenticationToken =
@@ -72,7 +71,6 @@ public class ApplicationFilter extends OncePerRequestFilter {
               .userName((String) claims.get("userName"))
               .role((String) claims.get("role"))
               .authority((String) claims.get("authorities"))
-              .userId((long) claims.get("userId"))
               .webAuthenticationDetails(new WebAuthenticationDetailsSource().buildDetails(request))
               .build();
       SecurityContextHolder.getContext().setAuthentication(customAuthenticationToken);

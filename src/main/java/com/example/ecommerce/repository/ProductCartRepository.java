@@ -10,6 +10,8 @@ public interface ProductCartRepository extends JpaRepository<ProductCart, Long> 
 
   ProductCart findById(long id);
 
+  ProductCart findByCartIdAndProductId(long cartId, long productId);
+
   List<ProductCart> findByCartId(long id);
 
 }

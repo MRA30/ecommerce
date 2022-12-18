@@ -26,6 +26,8 @@ public interface UserService {
 
   void createAdmin(UserRequest userRequest);
 
+  UserResponse profile(long userId);
+
   void updateUser(long id, UpdateUserRequest updateUserRequest);
 
   void updateProfile(long userId, UpdateProfileRequest updateProfileRequest);

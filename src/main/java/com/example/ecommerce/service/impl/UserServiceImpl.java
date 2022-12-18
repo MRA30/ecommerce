@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.transaction.Transactional;
@@ -60,13 +61,13 @@ public class UserServiceImpl implements UserService {
   }
 
 
-  private Principal principal(){
-    return SecurityContextHolder.getContext().getAuthentication();
+  private String  principal(){
+    return (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
   }
 
   @Override
   public User user() {
-    return userRepository.findByEmail(principal().getName());
+    return userRepository.findByEmail(principal());
   }
 
   @Override
@@ -130,6 +131,16 @@ public class UserServiceImpl implements UserService {
         .password(bCryptPasswordEncoder.encode(password))
         .build();
     save(user);
+  }
+
+  @Override
+  public UserResponse profile(long userId) {
+    User user = findById(userId);
+    if (user != null) {
+      return mappeUserToUserResponse(user);
+    } else {
+      throw new BusinessException("id", "User not found", HttpStatus.BAD_REQUEST);
+    }
   }
 
   @Override

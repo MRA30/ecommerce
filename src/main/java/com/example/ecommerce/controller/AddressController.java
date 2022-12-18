@@ -1,9 +1,7 @@
 package com.example.ecommerce.controller;
 
-import com.example.ecommerce.dto.request.CartRequest;
-import com.example.ecommerce.dto.request.ProductCartUpdateRequest;
-import com.example.ecommerce.dto.response.CartResponse;
-import com.example.ecommerce.service.CartService;
+import com.example.ecommerce.dto.request.AddressRequest;
+import com.example.ecommerce.service.AddressService;
 import com.example.ecommerce.service.UserService;
 import com.example.ecommerce.util.DefaultResponse;
 
@@ -24,53 +22,58 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/carts")
+@RequestMapping("/api/addresses")
 @RequiredArgsConstructor
-public class CartController {
+public class AddressController {
 
-  private final CartService cartService;
+  private final AddressService addressService;
 
   private final UserService userService;
 
-
   @PreAuthorize("hasRole('ROLE_CUSTOMER')")
   @PostMapping
-  public ResponseEntity<DefaultResponse<?>> addProductToCart(
-      @Valid @RequestBody CartRequest cartRequest) {
+  public ResponseEntity<DefaultResponse<?>> createAddress(
+      @Valid @RequestBody AddressRequest addressRequest) {
     long userId = userService.user().getId();
-    cartService.addProductToCart(userId, cartRequest);
-
+    addressService.createAddress(userId, addressRequest);
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(new DefaultResponse<>("Success", false, null, HttpStatus.CREATED.value()));
   }
 
   @PreAuthorize("hasRole('ROLE_CUSTOMER')")
   @GetMapping
-  public ResponseEntity<DefaultResponse<CartResponse>> getCartById() {
+  public ResponseEntity<DefaultResponse<?>> findAllAddressByUserId() {
     long userId = userService.user().getId();
-    CartResponse cartResponse = cartService.findCartByUserId(userId);
     return ResponseEntity.status(HttpStatus.OK)
-        .body(new DefaultResponse<>("Success", false, cartResponse, HttpStatus.OK.value()));
+        .body(new DefaultResponse<>("Success", false, addressService.findAllByUserId(userId),
+            HttpStatus.OK.value()));
+  }
+
+  @PreAuthorize("hasRole('ROLE_CUSTOMER')")
+  @GetMapping("/{id}")
+  public ResponseEntity<DefaultResponse<?>> findAddressById(@PathVariable("id") long id) {
+    long userId = userService.user().getId();
+    return ResponseEntity.status(HttpStatus.OK)
+        .body(new DefaultResponse<>("Success", false, addressService.findAddressById(id, userId),
+            HttpStatus.OK.value()));
   }
 
   @PreAuthorize("hasRole('ROLE_CUSTOMER')")
   @PutMapping("/{id}")
-  public ResponseEntity<DefaultResponse<?>> updateProductCart(@PathVariable("id") long id,
-      @Valid @RequestBody ProductCartUpdateRequest productCartUpdateRequest) {
+  public ResponseEntity<DefaultResponse<?>> updateAddress(@PathVariable("id") long id,
+      @Valid @RequestBody AddressRequest addressRequest) {
     long userId = userService.user().getId();
-    cartService.updateProductInCart(userId, id, productCartUpdateRequest);
+    addressService.updateAddress(userId, id, addressRequest);
     return ResponseEntity.status(HttpStatus.OK)
         .body(new DefaultResponse<>("Success", false, null, HttpStatus.OK.value()));
   }
 
-  @PreAuthorize("hasRole('ROLE_CUSTOMER')")
   @DeleteMapping("/{id}")
-  public ResponseEntity<DefaultResponse<?>> deleteProductCart(@PathVariable("id") long id) {
+  public ResponseEntity<DefaultResponse<?>> deleteAddressById(@PathVariable("id") long id) {
     long userId = userService.user().getId();
-    cartService.removeProductFromCart(userId, id);
+    addressService.deleteAddress(id, userId);
     return ResponseEntity.status(HttpStatus.OK)
         .body(new DefaultResponse<>("Success", false, null, HttpStatus.OK.value()));
   }
-
 
 }

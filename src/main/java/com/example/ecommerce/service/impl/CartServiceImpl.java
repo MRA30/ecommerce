@@ -33,8 +33,8 @@ public class CartServiceImpl implements CartService {
 
   private final CartRepository cartRepository;
   private final ProductCartService productCartService;
-  private UserService userService;
-  private ProductService productService;
+  private final UserService userService;
+  private final ProductService productService;
 
   @Override
   public Cart findById(long id) {
@@ -45,7 +45,8 @@ public class CartServiceImpl implements CartService {
   public void addProductToCart(long userId, CartRequest cartRequest) {
     Cart cart = cartRepository.findByUserId(userId);
     if (cart == null) {
-      User user = userService.findById(1);
+      System.out.println(userId);
+      User user = userService.findById(userId);
       Cart newCart = Cart.builder()
           .user(user)
           .build();
@@ -61,13 +62,20 @@ public class CartServiceImpl implements CartService {
       }
     } else {
       for (int i = 0; i < cartRequest.getProducts().size(); i++) {
-        Product product = productService.findById(cartRequest.getProducts().get(i).getProductId());
-        ProductCart productCart = ProductCart.builder()
-            .cartId(cart.getId())
-            .product(product)
-            .quantity(cartRequest.getProducts().get(i).getQuantity())
-            .build();
-        productCartService.save(productCart);
+        ProductCart productCart = productCartService.findProductCartByCartIdAndProductId(cart.getId(), cartRequest.getProducts().get(i).getProductId());
+        if(productCart != null){
+          productCart.setQuantity(productCart.getQuantity() + cartRequest.getProducts().get(i).getQuantity());
+          productCartService.save(productCart);
+        }else {
+          Product product = productService.findById(
+              cartRequest.getProducts().get(i).getProductId());
+          ProductCart productCartNew = ProductCart.builder()
+              .cartId(cart.getId())
+              .product(product)
+              .quantity(cartRequest.getProducts().get(i).getQuantity())
+              .build();
+          productCartService.save(productCartNew);
+        }
       }
     }
   }
